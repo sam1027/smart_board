@@ -1,0 +1,51 @@
+@font-face {
+  font-family: "Wmd-Bold";
+  font-weight: normal;
+  src: url("lib/resources/fonts/Wmd-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Wmd-ExtraBold";
+  font-weight: normal;
+  src: url("lib/resources/fonts/Wmd-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Wmd-Medium";
+  font-weight: normal;
+  src: url("lib/resources/fonts/Wmd-Medium.ttf") format("truetype");
+}
+
+
+@font-face {
+  font-family: "Wmd-Regular";
+  font-weight: normal;
+  src: url("lib/resources/fonts/Wmd-Regular.ttf") format("truetype");
+}
+
+
+@font-face {
+  font-family: "general-b";
+  font-weight: normal;
+  src: url("lib/resources/fonts/general-b.ttf") format("truetype");
+}
+
+
+@font-face {
+  font-family: "general-l";
+  font-weight: normal;
+  src: url("lib/resources/fonts/general-l.ttf") format("truetype");
+}
+
+
+@font-face {
+  font-family: "Wgeneral-m";
+  font-weight: normal;
+  src: url("lib/resources/fonts/general-m.ttf") format("truetype");
+}
+
+
+
+body {
+  font-family: "general-m";
+}
