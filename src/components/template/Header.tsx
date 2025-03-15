@@ -60,6 +60,7 @@ const Header = () => {
                 </ImgBlock>
                 <div>
                     <button onClick={()=>{navigate('menu1')}} >메뉴1</button>
+                    <button onClick={()=>{navigate('notice')}} >Notice</button>
                 </div>
                 <ProfileBlock>
                     <Avatar>
