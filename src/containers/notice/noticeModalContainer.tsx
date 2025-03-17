@@ -27,8 +27,6 @@ const NoticeModalContainer = (props:IProps) => {
         closeModalFn();
     };
 
-    console.log(watch("title"))
-
     useEffect(() => {
         reset();
     }, [isOpen]);
@@ -42,12 +40,12 @@ const NoticeModalContainer = (props:IProps) => {
                 <Form onSubmit={handleSubmit(handleSave)}>
                     <Label>
                         제목:
-                        <Input {...register("title", {required: true})} />
+                        <Input {...register("title", {required: true, maxLength: 100})} />
                         {errors.title && <span>필수 입력 항목입니다.</span>}
                     </Label>
                     <Label>
                         작성자:
-                        <Input {...register("writer", {required: true})} />
+                        <Input {...register("writer", {required: true, maxLength: 50})} />
                         {errors.writer && <span>필수 입력 항목입니다.</span>}
                     </Label>
                     <Label>

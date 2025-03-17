@@ -3,6 +3,8 @@ import { TColumn, TContent, TSampleData } from "./notice";
 import styled from "styled-components";
 import NoticeTableComponent from "components/template/table/notice-table";
 import NoticeModalContainer from "./NoticeModalContainer";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getList, insertNotice } from "api/notice/noticeApi";
 
 interface ButtonProps {
     danger?: boolean;
@@ -16,21 +18,25 @@ const Column:TColumn[] = [
 ];
 
 const NoticeContainer = () => {
+    const queryClient = useQueryClient();
+    const {data:noticeList, isLoading, error} = useQuery({
+        queryKey: ["noticeList"],
+        queryFn: () => getList(),
+    });
+
+    const mutation = useMutation({
+        mutationFn: (params:TContent) => insertNotice(params),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["noticeList"] });
+        }
+    });
+
+    // 공지사항 저장
+    const handleSave = (content:TContent) => {
+        mutation.mutate(content);
+    }
+
     const [showModal, isShowModal] = useState(false);
-    const [sampleList, setSampleList] = useState<TSampleData[]>([
-        {
-            id: 1,
-            title: '공지1',
-            writer: '유성은',
-            date: '2022-01-01',
-        },
-        {
-            id: 2,
-            title: '공지2',
-            writer: '김종원',
-            date: '2022-01-02',
-        },
-    ]);
 
     const showModalFn =() => {
         isShowModal(true);
@@ -38,11 +44,6 @@ const NoticeContainer = () => {
 
     const closeModalFn = () => {
         isShowModal(false);
-    };
-
-    const save = (content:TContent) => {
-        const newNotice = {...content, id: sampleList.length + 1};
-        setSampleList([...sampleList, newNotice]);
     };
 
     return (
@@ -56,7 +57,7 @@ const NoticeContainer = () => {
             {/* 공지 목록 */}
             <ListDiv>
                 <NoticeTableComponent
-                    list={sampleList}
+                    list={noticeList}
                     column={Column}
                 />
             </ListDiv>
@@ -65,7 +66,7 @@ const NoticeContainer = () => {
             <NoticeModalContainer
                 isOpen={showModal}
                 closeModalFn={closeModalFn}
-                save={save}
+                save={handleSave}
             />
         </>
     );
