@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TColumn, TContent, TSampleData } from "./notice";
+import { TColumn, TContent } from "./notice";
 import styled from "styled-components";
 import NoticeTableComponent from "components/template/table/notice-table";
 import NoticeModalContainer from "./NoticeModalContainer";
@@ -19,7 +19,7 @@ const Column:TColumn[] = [
 
 const NoticeContainer = () => {
     const queryClient = useQueryClient();
-    const {data:noticeList, isLoading, error} = useQuery({
+    const {data:noticeList, isLoading, error, refetch} = useQuery({
         queryKey: ["noticeList"],
         queryFn: () => getList(),
     });
@@ -50,6 +50,7 @@ const NoticeContainer = () => {
         <>
             {/* 공지목록 상단 */}
             <TopDiv>
+                <Button onClick={() => refetch()}>Refresh</Button>
                 <Button onClick={showModalFn}>글쓰기</Button>
                 <Button danger={true}>삭제</Button>
             </TopDiv>

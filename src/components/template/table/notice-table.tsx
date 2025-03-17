@@ -1,4 +1,4 @@
-import { TColumn, TSampleData } from "containers/notice/notice";
+import { TColumn, TContent } from "containers/notice/notice";
 import styled from "styled-components";
 
 const Table = styled.table`
@@ -28,8 +28,14 @@ const Tr = styled.tr`
     }
 `;
 
+const Checkbox = styled.input.attrs({ type: "checkbox" })`
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+`;
+
 interface IProps {
-    list: TSampleData[],
+    list: TContent[],
     column: TColumn[],
 }
 
@@ -40,6 +46,9 @@ const NoticeTableComponent = (props:IProps) => {
         <Table>
             <thead>
                 <tr>
+                    <Th>
+                        <Checkbox />
+                    </Th>
                     {column.map(item => {
                         return (
                             <Th key={item.key}>{item.label}</Th>
@@ -51,6 +60,10 @@ const NoticeTableComponent = (props:IProps) => {
                 {list && list.map((item, idx) => {
                     return (
                         <Tr key={item.id}>
+                            <Td>
+                                <Checkbox
+                                />
+                            </Td>
                             <Td>{list.length - idx}</Td>
                             <Td>{item.title}</Td>
                             <Td>{item.writer}</Td>

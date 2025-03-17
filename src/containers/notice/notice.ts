@@ -3,14 +3,8 @@ export type TColumn = {
     label: string;
 };
 
-export type TSampleData = {
-    id: number;
-    title: string;
-    writer: string;
-    date: string;
-};
-
 export type TContent = {
+    id?: number;
     title: string;
     writer: string;
     date: string;
