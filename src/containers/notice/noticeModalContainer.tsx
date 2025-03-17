@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TContent } from "./notice";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface IProps {
     isOpen: boolean;
@@ -11,34 +12,25 @@ interface IProps {
 const NoticeModalContainer = (props:IProps) => {
     const { isOpen, closeModalFn } = props;
 
-    const [content, setContent] = useState<TContent>({
-        title: "",
-        writer: "",
-        date: "",
-    });
+    const {
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm<TContent>();
     
     
-    const handleSave = () => {
-        props.save(content);
+    const handleSave:SubmitHandler<TContent> = (data) => {
+        console.log(data);
+        props.save(data);
         closeModalFn();
     };
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.currentTarget;
-        setContent((prev) => {
-            const newValue = {...prev, [name]: value};
-            console.log(newValue);
-            return newValue;
-        })
-        // setContent({...content, [name]: value });
-    };
+    console.log(watch("title"))
 
     useEffect(() => {
-        setContent({
-            title: "",
-            writer: "",
-            date: "",
-        });
+        reset();
     }, [isOpen]);
 
     if(!isOpen) return null;
@@ -47,21 +39,24 @@ const NoticeModalContainer = (props:IProps) => {
         <Overlay>
             <ModalContainer>
                 <h2>공지사항 등록</h2>
-                <Form>
+                <Form onSubmit={handleSubmit(handleSave)}>
                     <Label>
                         제목:
-                        <Input type="text" name="title" value={content.title} onChange={handleChange} required />
+                        <Input {...register("title", {required: true})} />
+                        {errors.title && <span>필수 입력 항목입니다.</span>}
                     </Label>
                     <Label>
                         작성자:
-                        <Input type="text" name="writer" value={content.writer} onChange={handleChange} required />
+                        <Input {...register("writer", {required: true})} />
+                        {errors.writer && <span>필수 입력 항목입니다.</span>}
                     </Label>
                     <Label>
                         작성일:
-                        <Input type="date" name="date" value={content.date} onChange={handleChange} required />
+                        <Input type="date" {...register("date", {required: true})} />
+                        {errors.date && <span>필수 입력 항목입니다.</span>}
                     </Label>
                     <ButtonContainer>
-                        <Button type="button" onClick={handleSave}>등록</Button>
+                        <Button type="submit">등록</Button>
                         <Button type="button" onClick={closeModalFn}>취소</Button>
                     </ButtonContainer>
                 </Form>
