@@ -1,4 +1,5 @@
 import { TColumn, TContent } from "containers/notice/notice";
+import { useState } from "react";
 import styled from "styled-components";
 
 const Table = styled.table`
@@ -41,6 +42,11 @@ interface IProps {
 
 const NoticeTableComponent = (props:IProps) => {
     const {list, column} = props;
+    const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
+
+    const handleCheckRow = (id:number) => {
+        console.log(id);
+    }
 
     return (
         <Table>
@@ -62,6 +68,7 @@ const NoticeTableComponent = (props:IProps) => {
                         <Tr key={item.id}>
                             <Td>
                                 <Checkbox
+                                    onChange={() => handleCheckRow(item.id)}
                                 />
                             </Td>
                             <Td>{list.length - idx}</Td>
