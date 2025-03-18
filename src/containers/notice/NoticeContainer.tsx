@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TColumn, TContent } from "./notice";
 import styled from "styled-components";
 import NoticeTableComponent from "components/template/table/notice-table";
 import NoticeModalContainer from "./NoticeModalContainer";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getList, insertNotice } from "api/notice/noticeApi";
+import { deleteNotice, getList, insertNotice } from "api/notice/noticeApi";
+import { isEmpty } from "lodash";
 
 interface ButtonProps {
     danger?: boolean;
@@ -24,7 +25,7 @@ const NoticeContainer = () => {
         queryFn: () => getList(),
     });
 
-    const mutation = useMutation({
+    const insertMutation = useMutation({
         mutationFn: (params:TContent) => insertNotice(params),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["noticeList"] });
@@ -33,26 +34,66 @@ const NoticeContainer = () => {
 
     // 공지사항 저장
     const handleSave = (content:TContent) => {
-        mutation.mutate(content);
+        insertMutation.mutate(content);
     }
 
     const [showModal, isShowModal] = useState(false);
 
-    const showModalFn =() => {
+    const handleShowModal =() => {
         isShowModal(true);
     };
 
-    const closeModalFn = () => {
+    const handleCloseModal = () => {
         isShowModal(false);
     };
+
+    // 체크박스 선택
+    const [allCheckButton, setAllCheckButton] = useState(false);
+    const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
+    const handleCheckRow = (id:number) => {
+        setCheckedRows((prev) => {
+            const newSet = new Set(prev);
+            if(newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    }
+    const handleToggleAllCheck = () => {
+        setAllCheckButton(!allCheckButton);
+    };
+    
+    useEffect(() => {
+        if(allCheckButton) {
+            const allSet:Set<number> = new Set(noticeList.map((item:TContent) => item.id));
+            setCheckedRows(allSet);
+        }else{
+            setCheckedRows(new Set());
+        }
+    }, [allCheckButton]);
+
+    const deleteMutation = useMutation({
+        mutationFn: (ids:string[]) => deleteNotice(ids),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["noticeList"] });
+        }
+    });
+
+    // 공지사항 삭제
+    const handleDelete = () => {
+        if(isEmpty(checkedRows)) alert("삭제할 항목을 선택해주세요.");
+        deleteMutation.mutate(Array.from(checkedRows).map(String));
+    }
 
     return (
         <>
             {/* 공지목록 상단 */}
             <TopDiv>
                 <Button onClick={() => refetch()}>Refresh</Button>
-                <Button onClick={showModalFn}>글쓰기</Button>
-                <Button danger={true}>삭제</Button>
+                <Button onClick={handleShowModal}>글쓰기</Button>
+                <Button danger={true} onClick={handleDelete}>삭제</Button>
             </TopDiv>
 
             {/* 공지 목록 */}
@@ -60,13 +101,16 @@ const NoticeContainer = () => {
                 <NoticeTableComponent
                     list={noticeList}
                     column={Column}
+                    checkedRows={checkedRows}
+                    handleCheckRow={handleCheckRow}
+                    handleToggleAllCheck={handleToggleAllCheck}
                 />
             </ListDiv>
 
             {/* 공지 등록/수정 모달 */}
             <NoticeModalContainer
                 isOpen={showModal}
-                closeModalFn={closeModalFn}
+                handleCloseModal={handleCloseModal}
                 save={handleSave}
             />
         </>

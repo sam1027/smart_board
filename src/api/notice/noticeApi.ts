@@ -11,3 +11,8 @@ export const insertNotice = async (params:TContent) => {
     const data = await apiClient.post(`/notice`, params);
     return data.data;
 }
+
+export const deleteNotice = async (ids:string[]) => {
+    const data = await apiClient.put(`/notice`, ids);
+    return data.data;
+}

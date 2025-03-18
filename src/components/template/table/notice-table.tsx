@@ -1,4 +1,5 @@
 import { TColumn, TContent } from "containers/notice/notice";
+import { set } from "lodash";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -38,22 +39,26 @@ const Checkbox = styled.input.attrs({ type: "checkbox" })`
 interface IProps {
     list: TContent[],
     column: TColumn[],
+    checkedRows: Set<number>,
+    handleCheckRow: (id: number) => void;
+    handleToggleAllCheck: () => void;
 }
+
+const toggleAllChk = ({handleToggleAllCheck}:IProps) => {
+    handleToggleAllCheck();
+};
 
 const NoticeTableComponent = (props:IProps) => {
     const {list, column} = props;
-    const [checkedRows, setCheckedRows] = useState<Set<number>>(new Set());
-
-    const handleCheckRow = (id:number) => {
-        console.log(id);
-    }
 
     return (
         <Table>
             <thead>
                 <tr>
                     <Th>
-                        <Checkbox />
+                        <Checkbox
+                            onChange={() => toggleAllChk(props)}
+                        />
                     </Th>
                     {column.map(item => {
                         return (
@@ -68,7 +73,8 @@ const NoticeTableComponent = (props:IProps) => {
                         <Tr key={item.id}>
                             <Td>
                                 <Checkbox
-                                    onChange={() => handleCheckRow(item.id)}
+                                    onChange={() => props.handleCheckRow(item.id)}
+                                    checked={props.checkedRows.has(item.id)}
                                 />
                             </Td>
                             <Td>{list.length - idx}</Td>

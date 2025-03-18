@@ -5,12 +5,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 interface IProps {
     isOpen: boolean;
-    closeModalFn: () => void;
+    handleCloseModal: () => void;
     save: (content:TContent) => void;
 };
 
 const NoticeModalContainer = (props:IProps) => {
-    const { isOpen, closeModalFn } = props;
+    const { isOpen, handleCloseModal } = props;
 
     const {
         register,
@@ -24,7 +24,7 @@ const NoticeModalContainer = (props:IProps) => {
     const handleSave:SubmitHandler<TContent> = (data) => {
         console.log(data);
         props.save(data);
-        closeModalFn();
+        handleCloseModal();
     };
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const NoticeModalContainer = (props:IProps) => {
                     </Label>
                     <ButtonContainer>
                         <Button type="submit">등록</Button>
-                        <Button type="button" onClick={closeModalFn}>취소</Button>
+                        <Button type="button" onClick={handleCloseModal}>취소</Button>
                     </ButtonContainer>
                 </Form>
             </ModalContainer>
